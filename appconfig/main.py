@@ -52,6 +52,8 @@ class AppConfig:
             _config = json.loads(_data)
             self.verbose_log('Config file exists and is valid JSON')
         except json.JSONDecodeError:
+            # this instance is triggered when the file is first created
+            # since we are only touching an empty file, should fix
             self.verbose_log('Invalid config file, replacing with empty JSON')
             with open(self.config_path, 'w') as f:
                 json.dump({}, f)
