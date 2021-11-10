@@ -76,10 +76,7 @@ class AppConfig:
             raise KeyError
         # validate value data type
         value_type_check(value)
-        try:
-            self.config[key] = value
-        except json.JSONEncoder:
-            print('aaaaaaa')
+        self.config[key] = value
 
         # write config to file
         self.write_conf()
