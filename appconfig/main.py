@@ -1,6 +1,6 @@
-from environ_paths import env_paths
 from pathlib import Path
 import json
+from appconfig import env_paths
 
 
 def value_type_check(value):
