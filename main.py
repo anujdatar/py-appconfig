@@ -4,6 +4,7 @@ import json
 
 
 def value_type_check(value):
+    """Just ensures a function is not passed"""
     _acceptable = [str, int, float, complex, dict, list, tuple, bool, type(None)]
     if type(value) not in _acceptable:
         print('value is of type: ', type(value))
@@ -40,10 +41,10 @@ class AppConfig:
         Path.mkdir(self.config_folder, parents=True, exist_ok=True)
         Path.touch(self.config_path)
 
-        self.validate()
+        self.validate_config_file_integrity()
         self.config = self.get_all()
 
-    def validate(self):
+    def validate_config_file_integrity(self):
         """verify if config file is valid json"""
         with open(self.config_path, 'r') as f:
             _data = f.read()
@@ -93,29 +94,3 @@ class AppConfig:
         # check 'http://stupidpythonideas.blogspot.com/2014/07/getting-atomic-writes-right.html'
         with open(self.config_path, 'w') as f:
             json.dump(self.config, f)
-
-
-# test module functionality
-if __name__ == '__main__':
-    a = AppConfig(project_name='test', verbose=True)
-    test = {
-        "test": 1234,
-        "something": "else"
-    }
-    for item in test:
-        a.set(item, test[item])
-    a.write_conf()
-
-    with open(a.config_path) as f:
-        __data = json.load(f)
-
-    try:
-        assert __data["test"] == 1234
-        assert __data["something"] == "else"
-        print('Tests passed')
-    except AssertionError:
-        print('Test failed, proper data write failure')
-
-    print('deleting test config dir')
-    import shutil
-    shutil.rmtree(a.config_folder)
