@@ -1,7 +1,6 @@
 from os.path import exists
 import shutil
-import json
-from main import AppConfig
+from appconfig import AppConfig
 
 a = AppConfig(project_name='test', verbose=True)
 
