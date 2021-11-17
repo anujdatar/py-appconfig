@@ -30,6 +30,7 @@ class AppConfig:
         self.conf_name = kwargs.get('conf_name', 'config')
         self.conf_ext = kwargs.get('conf_ext', '.json')
         self.verbose = kwargs.get('verbose', False)
+        self.defaults = kwargs.get('defaults', None)
 
         self.conf_file = self.conf_name + self.conf_ext
         self.config_folder = env_paths(self.project_name)['config']
@@ -37,33 +38,56 @@ class AppConfig:
         self.temp_conf = self.config_folder / 'tmpfile'
         self.verbose_log('Config Path: ', self.config_path)
 
-        # verify config folder and file exist, if not create
-        Path.mkdir(self.config_folder, parents=True, exist_ok=True)
-        Path.touch(self.config_path)
+        self.verbose_log('Checking of config_file exists')
+        if not Path(self.config_folder).is_dir():
+            # if config folder does not already exist
+            self.first_init()
+        else:
+            if Path(self.config_path).is_file():
+                self.verbose_log('check existing config file is valid json')
+                if not self.validate_config_file_integrity():
+                    self.verbose_log('existing config not valid json, resetting to default config')
+                    self.first_init()
 
-        self.validate_config_file_integrity()
         self.config = self.get_all()
 
-    def validate_config_file_integrity(self):
+    def create_empty_json_file(self) -> None:
+        """create a valid empty json file at config path"""
+        with open(self.config_path, 'w') as f:
+            json.dump({}, f)
+
+    def first_init(self) -> None:
+        """create config folder+file when none exist at first init"""
+        Path.mkdir(self.config_folder, parents=True, exist_ok=True)
+        Path.touch(self.config_path)
+        self.create_empty_json_file()
+        self.set_defaults()
+
+    def set_defaults(self) -> None:
+        if isinstance(self.defaults, dict):
+            for (key, value) in self.defaults.items():
+                self.config[key] = value
+            self.write_conf()
+
+    def validate_config_file_integrity(self) -> bool:
         """verify if config file is valid json"""
         with open(self.config_path, 'r') as f:
             _data = f.read()
         try:
             _config = json.loads(_data)
             self.verbose_log('Config file exists and is valid JSON')
+            return True
         except json.JSONDecodeError:
-            # this instance is triggered when the file is first created
-            # since we are only touching an empty file, should fix
-            self.verbose_log('Invalid config file, replacing with empty JSON')
-            with open(self.config_path, 'w') as f:
-                json.dump({}, f)
+            self.verbose_log('Invalid config file, replacing with base config')
+            # self.first_init()
+            return False
 
-    def get_all(self):
+    def get_all(self) -> Dict:
         """get all values stored in config file"""
         with open(self.config_path) as f:
             return json.load(f)
 
-    def get(self, key):
+    def get(self, key: str) -> Any:
         """get single config value from config store"""
         try:
             return self.config[key]
@@ -71,7 +95,7 @@ class AppConfig:
             self.verbose_log('Invalid key')
             return
 
-    def set(self, key, value):
+    def set(self, key: str, value: Any) -> None:
         """set value of configuration in store"""
         # validate key data type
         if type(key) != str:
