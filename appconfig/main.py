@@ -1,9 +1,10 @@
 from pathlib import Path
 import json
+from typing import Any, Dict
 from appconfig import env_paths
 
 
-def value_type_check(value):
+def value_type_check(value: Any) -> None:
     """Just ensures a function is not passed"""
     _acceptable = [str, int, float, complex, dict, list, tuple, bool, type(None)]
     if type(value) not in _acceptable:
