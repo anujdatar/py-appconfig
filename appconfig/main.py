@@ -28,10 +28,13 @@ class AppConfig:
 
         # get all kwargs passed to class constructor
         self.project_name = kwargs['project_name']
+        self.project_id = kwargs.get('project_id', self.project_name)
+        self.project_version = kwargs.get('version', '0.0.1')
         self.conf_name = kwargs.get('conf_name', 'config')
         self.conf_ext = kwargs.get('conf_ext', '.json')
         self.verbose = kwargs.get('verbose', False)
         self.defaults = kwargs.get('defaults', None)
+        self.config = Dict
 
         self.conf_file = self.conf_name + self.conf_ext
         self.config_folder = env_paths(self.project_name)['config']
@@ -62,6 +65,11 @@ class AppConfig:
         Path.mkdir(self.config_folder, parents=True, exist_ok=True)
         Path.touch(self.config_path)
         self.create_empty_json_file()
+
+        self.config['projectName'] = self.project_name
+        self.config['projectId'] = self.project_id
+        self.config['version'] = self.project_version
+
         self.set_defaults()
 
     def set_defaults(self) -> None:
