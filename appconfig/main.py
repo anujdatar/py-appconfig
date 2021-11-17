@@ -34,7 +34,7 @@ class AppConfig:
         self.conf_ext = kwargs.get('conf_ext', '.json')
         self.verbose = kwargs.get('verbose', False)
         self.defaults = kwargs.get('defaults', None)
-        self.config = Dict
+        self.config = dict()
 
         self.conf_file = self.conf_name + self.conf_ext
         self.config_folder = env_paths(self.project_name)['config']
