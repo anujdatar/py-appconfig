@@ -69,7 +69,6 @@ class AppConfig:
         self.config['projectName'] = self.project_name
         self.config['projectId'] = self.project_id
         self.config['version'] = self.project_version
-
         self.set_defaults()
 
     def set_defaults(self) -> None:
@@ -117,8 +116,8 @@ class AppConfig:
         self.write_conf()
 
     def reset_all(self) -> None:
+        self.config = dict()
         self.first_init()
-        self.set_defaults()
 
     def reset(self, key: str) -> None:
         if key in self.defaults:
