@@ -15,8 +15,8 @@ test_config = {
     "number": 1234,
     "string": "some string value"
 }
-for item in test_config:
-    a.set(item, test_config[item])
+for (key, value) in test_config.items():
+    a.set(key, value)
 a.write_conf()
 
 
