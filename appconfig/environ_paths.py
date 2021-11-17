@@ -2,13 +2,13 @@ from tempfile import gettempdir
 from os import getenv
 from pathlib import Path
 import sys
-
+from typing import Dict
 
 home_dir = Path.home()
 temp_dir = Path(gettempdir())
 
 
-def mac_paths(name):
+def mac_paths(name: str) -> Dict:
     """
     :param name:
     :return: paths for data/logs/config/temp, etc
@@ -23,7 +23,7 @@ def mac_paths(name):
     }
 
 
-def win_paths(name):
+def win_paths(name: str) -> Dict:
     """
     windows is not opinionated, you can use any locations
     :param name:
@@ -41,7 +41,7 @@ def win_paths(name):
     }
 
 
-def linux_paths(name):
+def linux_paths(name: str) -> Dict:
     """
     using xdg-basedir spec
     :param name:
@@ -61,7 +61,7 @@ def linux_paths(name):
     }
 
 
-def env_paths(name):
+def env_paths(name: str) -> Dict:
     """
     define env_paths based on the detected platform
     :param name:
