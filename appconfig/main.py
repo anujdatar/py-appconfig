@@ -107,12 +107,34 @@ class AppConfig:
         # write config to file
         self.write_conf()
 
-    def verbose_log(self, *args):
+    def reset_all(self) -> None:
+        self.first_init()
+        self.set_defaults()
+
+    def reset(self, key: str) -> None:
+        if key in self.defaults:
+            self.verbose_log(f'resetting {key} config to default value')
+            __default_value = self.defaults[key]
+            self.config[key] = __default_value
+            self.write_conf()
+        else:
+            self.verbose_log(f'{key} has no default value, deleting entry corresponding to {key}')
+            self.delete(key)
+
+    def delete(self, key: str) -> None:
+        if key in self.config:
+            self.verbose_log(f'deleting {key} config')
+            del self.config[key]
+            self.write_conf()
+        else:
+            self.verbose_log(f'{key} has no set config, doing nothing')
+
+    def verbose_log(self, *args) -> None:
         """print statements if you want a verbose run for debug"""
         if self.verbose:
             print(*args)
 
-    def write_conf(self):
+    def write_conf(self) -> None:
         # TODO make writing file atomic
         # check 'http://stupidpythonideas.blogspot.com/2014/07/getting-atomic-writes-right.html'
         with open(self.config_path, 'w') as f:
