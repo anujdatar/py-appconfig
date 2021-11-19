@@ -1,4 +1,4 @@
-# py-AppConfig
+# py-appconfig
 
 Persistent configuration storage for python applications. Based on similar `npm` modules,
 because of the lack of a `python` package that does something similar.
@@ -9,10 +9,10 @@ because of the lack of a `python` package that does something similar.
 ### Installation
 
 ```sh
-# still in testing, pip package coming soon
+# PyPI package
 pip install py-appconfig
 
-# for now, package is active and working on TestPyPI
+# testing package from TestPyPI
 pip install -i https://test.pypi.org/simple/ py-appconfig
 ```
 
